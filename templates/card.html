@@ -1,43 +1,146 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Happy Birthday!</title>
+    <title>Your Card is Ready!</title>
     <style>
-        body { 
-            background-color: #ffeaa7; 
-            display: flex; 
-            justify-content: center; 
-            align-items: center; 
-            height: 100vh; 
-            font-family: cursive; 
+        body {
+            background-color: #a8d0e6; /* Soft blue background */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden; /* Prevent scrollbars during animation */
         }
-        .card {
+
+        /* The Container for the whole assembly */
+        .envelope-wrapper {
+            position: relative;
+            width: 350px;
+            height: 250px;
+            /* Pushes the whole thing down slightly to center visually */
+            margin-top: 100px; 
+        }
+
+        /* --- The Card Itself (The content) --- */
+        .card-content {
+            position: absolute;
+            /* Sized slightly smaller than envelope */
+            width: 320px;
+            height: 280px;
+            left: 15px; /* Center horizontally relative to envelope wrapper */
             background: white;
-            width: 400px;
-            padding: 40px;
             text-align: center;
-            border: 10px solid #fab1a0;
-            border-radius: 15px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            padding: 20px;
+            box-sizing: border-box;
+            border-radius: 5px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            font-family: 'cursive', sans-serif;
+            
+            /* Layering: It must be between the back and front of envelope */
+            z-index: 1; 
+            
+            /* The Animation: Start low, slide up */
+            top: 50px; /* Starting position hidden deep in envelope */
+            animation: slide-up 1.5s ease-out forwards;
+            animation-delay: 0.8s; /* Wait for flap to open first */
         }
-        h1 { color: #d63031; font-size: 3em; margin: 0; }
-        h2 { color: #e17055; }
-        p { font-size: 1.2em; color: #636e72; }
-        .date { font-size: 0.9em; color: #b2bec3; margin-top: 30px; }
+
+        /* Card Text Styling */
+        .card-content h1 { color: #ff6b6b; margin: 10px 0; font-size: 1.8em;}
+        .card-content h2 { color: #54a0ff; margin: 5px 0; font-size: 1.2em;}
+        .card-content p { color: #576574; font-style: italic; margin-top: 20px;}
+        .date-mark { font-size: 0.8em; color: #ccc; margin-top: 30px;}
+
+        /* --- The Envelope Parts (CSS Triangles) --- */
+        
+        /* Common Envelope Color */
+        :root { --env-color: #f1c40f; /* A nice golden yellow */ }
+
+        /* The back of the envelope (solid rectangle) */
+        .envelope-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: #d4ac0d; /* Slightly darker inside color */
+            border-radius: 0 0 5px 5px;
+            z-index: 0;
+        }
+
+        /* The front pocket (Triangle pointing up) */
+        .envelope-front {
+            position: absolute;
+            bottom: 0;
+            width: 0;
+            height: 0;
+            /* CSS trick to make triangles using thick borders */
+            border-style: solid;
+            border-width: 0 175px 150px 175px; /* Top Right Bottom Left */
+            border-color: transparent transparent var(--env-color) transparent;
+            z-index: 3; /* Sits on top of the card */
+        }
+
+        /* The top closing flap (Triangle pointing down) */
+        .envelope-top {
+            position: absolute;
+            top: 0;
+            width: 0;
+            height: 0;
+            border-style: solid;
+            border-width: 130px 175px 0 175px; /* Top Right Bottom Left */
+            border-color: var(--env-color) transparent transparent transparent;
+            z-index: 4; /* Sits on top of everything initially */
+            
+            /* Animation hinges from the top edge */
+            transform-origin: top;
+            animation: flap-open 1s ease-in-out forwards;
+        }
+
+        /* --- Keyframe Animations --- */
+
+        /* Rotate the top flap open like a real envelope hinge */
+        @keyframes flap-open {
+            0% { transform: rotateX(0deg); z-index: 4;}
+            100% { transform: rotateX(180deg); z-index: 2; } /* Flips back and drops z-index */
+        }
+
+        /* Slide the card upwards out of the pocket */
+        @keyframes slide-up {
+            0% { top: 50px; }
+            100% { top: -150px; } /* Final position sticking out the top */
+        }
+
+        .try-again {
+            position: fixed;
+            bottom: 20px;
+            text-decoration: none;
+            color: white;
+            background: #54a0ff;
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-family: sans-serif;
+        }
     </style>
 </head>
 <body>
-    <div class="card">
-        <h1>🎈 Happy {{ age }}th!</h1>
-        <h2>To {{ name }}</h2>
-        <p>"{{ message }}"</p>
+
+    <div class="envelope-wrapper">
         
-        <div class="date">
-            Save the date: {{ date }}
+        <div class="envelope-back"></div>
+
+        <div class="card-content">
+            <h1>Happy {{ age }}th Birthday!</h1>
+            <h2>Dear {{ name }},</h2>
+            <p>"{{ message }}"</p>
+            <div class="date-mark">Celebration Date: {{ date }}</div>
         </div>
+
+        <div class="envelope-front"></div>
         
-        <br>
-        <a href="/">Create Another</a>
+        <div class="envelope-top"></div>
     </div>
+
+    <a href="/" class="try-again">Create Another</a>
+
 </body>
 </html>
