@@ -22,13 +22,13 @@
             margin-top: 100px;
         }
 
-        /* --- 1. The Card (Hidden in the Middle) --- */
+        /* --- 1. The Card (Hidden Behind Envelope) --- */
         .card {
             position: absolute;
             /* Center the card relative to the envelope */
             left: 15px;
-            /* Start LOWER (top: 50px) so it is hidden deep inside */
-            top: 50px; 
+            /* Start higher, hidden behind the flap */
+            top: 0px; 
             width: 270px;
             height: 170px;
             background: white;
@@ -38,12 +38,12 @@
             border: 1px solid #ddd;
             border-radius: 5px;
 
-            /* STACKING: Behind Pocket (6) and Lid (10), but above Back (0) */
-            z-index: 5;
+            /* STACKING: Start behind everything, emerge during animation */
+            z-index: 1;
 
             /* ANIMATION: Wait 1s for lid to open, then slide up */
-            animation: slide-up 1s ease-out forwards;
-            animation-delay: 1s; 
+            animation: hold 1s forwards, slide-up 1s ease-out forwards;
+            animation-delay: 0s, 1s; 
         }
 
         .card h1 { font-size: 1.5em; color: #ff7675; margin: 0; }
@@ -66,21 +66,19 @@
             z-index: 6; 
         }
 
-        /* --- 3. The Lid (Top Triangle) --- */
+        /* --- 3. The Lid (Top Rectangle) --- */
         .lid {
             position: absolute;
             top: 0;
-            left: 0;
-            width: 0;
-            height: 0;
-            border-style: solid;
-            /* 100px height covers the top half exactly */
-            border-width: 100px 150px 0 150px;
-            border-color: #ff7675 transparent transparent transparent;
+            left: 5px;
+            width: 290px;
+            height: 190px;
+            background: #ff7675;
+            border-radius: 5px 5px 0 0;
             
             /* STACKING: Starts highest (10) to hide everything */
             z-index: 10; 
-            transform-origin: top;
+            transform-origin: top center;
 
             /* ANIMATION: Open immediately */
             animation: open-lid 1s ease-in-out forwards;
@@ -99,14 +97,21 @@
             }
         }
 
+        @keyframes hold {
+            0%, 100% {
+                top: 0px;
+                z-index: 1;
+            }
+        }
+
         @keyframes slide-up {
             0% {
-                top: 50px; /* Start deep inside */
-                z-index: 5; /* Start behind the pocket */
+                top: 0px; /* Start from current position */
+                z-index: 1;
             }
             100% {
                 top: -100px; /* Slide up out of envelope */
-                z-index: 4; /* Stay behind pocket, but appear 'out' */
+                z-index: 9; /* Emerge on top as it slides out */
             }
         }
         
