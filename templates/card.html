@@ -1,146 +1,143 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Your Card is Ready!</title>
+    <title>Surprise!</title>
     <style>
         body {
-            background-color: #a8d0e6; /* Soft blue background */
+            background-color: #fce4ec;
+            height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
             margin: 0;
-            overflow: hidden; /* Prevent scrollbars during animation */
+            font-family: 'Arial', sans-serif;
+            overflow: hidden; 
         }
 
-        /* The Container for the whole assembly */
+        /* --- 1. The Container (The Envelope Body) --- */
         .envelope-wrapper {
             position: relative;
-            width: 350px;
-            height: 250px;
-            /* Pushes the whole thing down slightly to center visually */
-            margin-top: 100px; 
+            width: 300px;
+            height: 200px;
+            background: #c0392b; /* Dark Red Inside/Back */
+            margin-top: 100px; /* Space for card to pop up */
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
         }
 
-        /* --- The Card Itself (The content) --- */
-        .card-content {
+        /* --- 2. The Card (Hidden Initially) --- */
+        .card {
             position: absolute;
-            /* Sized slightly smaller than envelope */
-            width: 320px;
-            height: 280px;
-            left: 15px; /* Center horizontally relative to envelope wrapper */
             background: white;
+            width: 270px;  /* Smaller than envelope width */
+            height: 180px; /* Smaller than envelope height */
+            
+            /* Center it inside the envelope */
+            left: 15px; 
+            top: 10px; 
+            
             text-align: center;
-            padding: 20px;
+            padding: 15px;
             box-sizing: border-box;
-            border-radius: 5px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-            font-family: 'cursive', sans-serif;
+            border: 2px solid #e74c3c;
             
-            /* Layering: It must be between the back and front of envelope */
-            z-index: 1; 
-            
-            /* The Animation: Start low, slide up */
-            top: 50px; /* Starting position hidden deep in envelope */
+            /* Layering: Sandwich it between Back (0) and Pocket (20) */
+            z-index: 5; 
+
+            /* ANIMATION: Wait 1s, then slide UP */
             animation: slide-up 1.5s ease-out forwards;
-            animation-delay: 0.8s; /* Wait for flap to open first */
+            animation-delay: 1s; 
         }
 
         /* Card Text Styling */
-        .card-content h1 { color: #ff6b6b; margin: 10px 0; font-size: 1.8em;}
-        .card-content h2 { color: #54a0ff; margin: 5px 0; font-size: 1.2em;}
-        .card-content p { color: #576574; font-style: italic; margin-top: 20px;}
-        .date-mark { font-size: 0.8em; color: #ccc; margin-top: 30px;}
+        .card h1 { margin: 0; color: #e74c3c; font-size: 1.5em; }
+        .card p { font-size: 1em; color: #555; }
+        .card .date { font-size: 0.8em; color: #999; margin-top: 10px; }
 
-        /* --- The Envelope Parts (CSS Triangles) --- */
-        
-        /* Common Envelope Color */
-        :root { --env-color: #f1c40f; /* A nice golden yellow */ }
-
-        /* The back of the envelope (solid rectangle) */
-        .envelope-back {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            background: #d4ac0d; /* Slightly darker inside color */
-            border-radius: 0 0 5px 5px;
-            z-index: 0;
-        }
-
-        /* The front pocket (Triangle pointing up) */
-        .envelope-front {
+        /* --- 3. The Front Pocket (Triangles) --- */
+        .pocket {
             position: absolute;
             bottom: 0;
+            left: 0;
             width: 0;
             height: 0;
-            /* CSS trick to make triangles using thick borders */
+            /* Creates the envelope "V" shape */
             border-style: solid;
-            border-width: 0 175px 150px 175px; /* Top Right Bottom Left */
-            border-color: transparent transparent var(--env-color) transparent;
-            z-index: 3; /* Sits on top of the card */
+            border-width: 0 150px 100px 150px; /* Top, Right, Bottom, Left */
+            border-color: transparent transparent #e74c3c transparent; /* Red Front */
+            z-index: 20; /* Sits ON TOP of the card */
         }
 
-        /* The top closing flap (Triangle pointing down) */
-        .envelope-top {
+        /* --- 4. The Top Flap (The Lid) --- */
+        .lid {
             position: absolute;
             top: 0;
+            left: 0;
             width: 0;
             height: 0;
+            /* Creates the top triangle */
             border-style: solid;
-            border-width: 130px 175px 0 175px; /* Top Right Bottom Left */
-            border-color: var(--env-color) transparent transparent transparent;
-            z-index: 4; /* Sits on top of everything initially */
+            border-width: 100px 150px 0 150px; /* Top, Right, Bottom, Left */
+            border-color: #c0392b transparent transparent transparent; /* Dark Red Flap */
             
-            /* Animation hinges from the top edge */
+            /* Hinge logic */
             transform-origin: top;
-            animation: flap-open 1s ease-in-out forwards;
+            z-index: 25; /* Highest layer initially (Covers the card) */
+
+            /* ANIMATION: Open immediately */
+            animation: open-lid 1s ease-in-out forwards;
         }
 
-        /* --- Keyframe Animations --- */
+        /* --- Animations --- */
 
-        /* Rotate the top flap open like a real envelope hinge */
-        @keyframes flap-open {
-            0% { transform: rotateX(0deg); z-index: 4;}
-            100% { transform: rotateX(180deg); z-index: 2; } /* Flips back and drops z-index */
+        /* 1. Flap opens */
+        @keyframes open-lid {
+            0% { 
+                transform: rotateX(0deg); 
+            }
+            100% { 
+                transform: rotateX(180deg); 
+                z-index: 1; /* Drop behind the envelope body once open */
+            }
         }
 
-        /* Slide the card upwards out of the pocket */
+        /* 2. Card slides out */
         @keyframes slide-up {
-            0% { top: 50px; }
-            100% { top: -150px; } /* Final position sticking out the top */
+            0% { 
+                top: 10px; /* Start hidden inside */
+            }
+            100% { 
+                top: -150px; /* Slide WAY up out of the top */
+                z-index: 15; /* Stay visible but behind the pocket if needed, or above */
+            }
         }
-
-        .try-again {
+        
+        .create-btn {
             position: fixed;
             bottom: 20px;
-            text-decoration: none;
+            background: #e74c3c;
             color: white;
-            background: #54a0ff;
             padding: 10px 20px;
-            border-radius: 20px;
-            font-family: sans-serif;
+            text-decoration: none;
+            border-radius: 5px;
         }
     </style>
 </head>
 <body>
 
     <div class="envelope-wrapper">
-        
-        <div class="envelope-back"></div>
-
-        <div class="card-content">
-            <h1>Happy {{ age }}th Birthday!</h1>
-            <h2>Dear {{ name }},</h2>
-            <p>"{{ message }}"</p>
-            <div class="date-mark">Celebration Date: {{ date }}</div>
+        <div class="card">
+            <h1>Happy {{ age }}th!</h1>
+            <p>Dear {{ name }},</p>
+            <p style="font-style: italic;">"{{ message }}"</p>
+            <div class="date">{{ date }}</div>
         </div>
 
-        <div class="envelope-front"></div>
-        
-        <div class="envelope-top"></div>
+        <div class="pocket"></div>
+
+        <div class="lid"></div>
     </div>
 
-    <a href="/" class="try-again">Create Another</a>
+    <a href="/" class="create-btn">Create Another</a>
 
 </body>
 </html>
