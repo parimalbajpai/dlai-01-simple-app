@@ -4,84 +4,83 @@
     <title>Surprise!</title>
     <style>
         body {
-            background-color: #fce4ec;
+            background-color: #ffeaa7;
             height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
             margin: 0;
+            overflow: hidden;
             font-family: 'Arial', sans-serif;
-            overflow: hidden; 
         }
 
-        /* --- 1. The Container (The Envelope Body) --- */
         .envelope-wrapper {
             position: relative;
             width: 300px;
             height: 200px;
-            background: #c0392b; /* Dark Red Inside/Back */
-            margin-top: 100px; /* Space for card to pop up */
-            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+            background: #d63031; /* Envelope Inside Color */
+            margin-top: 100px;
         }
 
-        /* --- 2. The Card (Hidden Initially) --- */
+        /* --- 1. The Card (Hidden in the Middle) --- */
         .card {
             position: absolute;
+            /* Center the card relative to the envelope */
+            left: 15px;
+            /* Start LOWER (top: 50px) so it is hidden deep inside */
+            top: 50px; 
+            width: 270px;
+            height: 170px;
             background: white;
-            width: 270px;  /* Smaller than envelope width */
-            height: 180px; /* Smaller than envelope height */
-            
-            /* Center it inside the envelope */
-            left: 15px; 
-            top: 10px; 
-            
             text-align: center;
-            padding: 15px;
+            padding: 20px;
             box-sizing: border-box;
-            border: 2px solid #e74c3c;
-            
-            /* Layering: Sandwich it between Back (0) and Pocket (20) */
-            z-index: 5; 
+            border: 1px solid #ddd;
+            border-radius: 5px;
 
-            /* ANIMATION: Wait 1s, then slide UP */
-            animation: slide-up 1.5s ease-out forwards;
+            /* STACKING: Behind Pocket (6) and Lid (10), but above Back (0) */
+            z-index: 5;
+
+            /* ANIMATION: Wait 1s for lid to open, then slide up */
+            animation: slide-up 1s ease-out forwards;
             animation-delay: 1s; 
         }
 
-        /* Card Text Styling */
-        .card h1 { margin: 0; color: #e74c3c; font-size: 1.5em; }
-        .card p { font-size: 1em; color: #555; }
-        .card .date { font-size: 0.8em; color: #999; margin-top: 10px; }
+        .card h1 { font-size: 1.5em; color: #ff7675; margin: 0; }
+        .card p { font-size: 1em; color: #636e72; }
+        .date { font-size: 0.8em; color: #b2bec3; margin-top: 20px; }
 
-        /* --- 3. The Front Pocket (Triangles) --- */
+        /* --- 2. The Front Pocket (Bottom Triangle) --- */
         .pocket {
             position: absolute;
             bottom: 0;
             left: 0;
             width: 0;
             height: 0;
-            /* Creates the envelope "V" shape */
             border-style: solid;
-            border-width: 0 150px 100px 150px; /* Top, Right, Bottom, Left */
-            border-color: transparent transparent #e74c3c transparent; /* Red Front */
-            z-index: 20; /* Sits ON TOP of the card */
+            /* 100px height covers the bottom half exactly */
+            border-width: 0 150px 100px 150px;
+            border-color: transparent transparent #ff7675 transparent;
+            
+            /* STACKING: Always sits on top of the hidden card */
+            z-index: 6; 
         }
 
-        /* --- 4. The Top Flap (The Lid) --- */
+        /* --- 3. The Lid (Top Triangle) --- */
         .lid {
             position: absolute;
             top: 0;
             left: 0;
             width: 0;
             height: 0;
-            /* Creates the top triangle */
             border-style: solid;
-            border-width: 100px 150px 0 150px; /* Top, Right, Bottom, Left */
-            border-color: #c0392b transparent transparent transparent; /* Dark Red Flap */
+            /* 100px height covers the top half exactly */
+            border-width: 100px 150px 0 150px;
+            border-color: #ff7675 transparent transparent transparent;
             
-            /* Hinge logic */
+            /* STACKING: Starts highest (10) to hide everything */
+            z-index: 10; 
             transform-origin: top;
-            z-index: 25; /* Highest layer initially (Covers the card) */
 
             /* ANIMATION: Open immediately */
             animation: open-lid 1s ease-in-out forwards;
@@ -89,37 +88,38 @@
 
         /* --- Animations --- */
 
-        /* 1. Flap opens */
         @keyframes open-lid {
-            0% { 
-                transform: rotateX(0deg); 
+            0% {
+                transform: rotateX(0deg);
+                z-index: 10; /* Keep it on top while closed */
             }
-            100% { 
-                transform: rotateX(180deg); 
-                z-index: 1; /* Drop behind the envelope body once open */
+            100% {
+                transform: rotateX(180deg);
+                z-index: 1; /* Move it to the very back once open */
             }
         }
 
-        /* 2. Card slides out */
         @keyframes slide-up {
-            0% { 
-                top: 10px; /* Start hidden inside */
+            0% {
+                top: 50px; /* Start deep inside */
+                z-index: 5; /* Start behind the pocket */
             }
-            100% { 
-                top: -150px; /* Slide WAY up out of the top */
-                z-index: 15; /* Stay visible but behind the pocket if needed, or above */
+            100% {
+                top: -100px; /* Slide up out of envelope */
+                z-index: 4; /* Stay behind pocket, but appear 'out' */
             }
         }
         
-        .create-btn {
+        .reset-btn {
             position: fixed;
             bottom: 20px;
-            background: #e74c3c;
+            text-decoration: none;
+            background: #ff7675;
             color: white;
             padding: 10px 20px;
-            text-decoration: none;
-            border-radius: 5px;
+            border-radius: 20px;
         }
+
     </style>
 </head>
 <body>
@@ -128,16 +128,15 @@
         <div class="card">
             <h1>Happy {{ age }}th!</h1>
             <p>Dear {{ name }},</p>
-            <p style="font-style: italic;">"{{ message }}"</p>
+            <p><i>"{{ message }}"</i></p>
             <div class="date">{{ date }}</div>
         </div>
 
         <div class="pocket"></div>
-
         <div class="lid"></div>
     </div>
 
-    <a href="/" class="create-btn">Create Another</a>
+    <a href="/" class="reset-btn">Make Another</a>
 
 </body>
 </html>
