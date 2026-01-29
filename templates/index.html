@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Create a Birthday Card</title>
+    <style>
+        body { font-family: sans-serif; padding: 50px; background-color: #f4f4f9; }
+        form { background: white; padding: 20px; border-radius: 8px; max-width: 400px; margin: auto; }
+        input, textarea { width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ddd; }
+        button { width: 100%; padding: 10px; background: #ff6b6b; color: white; border: none; cursor: pointer; }
+        button:hover { background: #ff4757; }
+    </style>
+</head>
+<body>
+    <h2 style="text-align: center;">🎉 Card Generator</h2>
+    <form action="/generate" method="POST">
+        <label>Name:</label>
+        <input type="text" name="name" required placeholder="e.g. Alice">
+        
+        <label>Turning Age:</label>
+        <input type="number" name="age" required placeholder="e.g. 25">
+        
+        <label>Birthday Date:</label>
+        <input type="date" name="date" required>
+        
+        <label>Personal Message:</label>
+        <textarea name="message" rows="4" placeholder="Write a wish..."></textarea>
+        
+        <button type="submit">Generate Card</button>
+    </form>
+</body>
+</html>

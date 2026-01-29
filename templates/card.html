@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Happy Birthday!</title>
+    <style>
+        body { 
+            background-color: #ffeaa7; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            height: 100vh; 
+            font-family: cursive; 
+        }
+        .card {
+            background: white;
+            width: 400px;
+            padding: 40px;
+            text-align: center;
+            border: 10px solid #fab1a0;
+            border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+        h1 { color: #d63031; font-size: 3em; margin: 0; }
+        h2 { color: #e17055; }
+        p { font-size: 1.2em; color: #636e72; }
+        .date { font-size: 0.9em; color: #b2bec3; margin-top: 30px; }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h1>🎈 Happy {{ age }}th!</h1>
+        <h2>To {{ name }}</h2>
+        <p>"{{ message }}"</p>
+        
+        <div class="date">
+            Save the date: {{ date }}
+        </div>
+        
+        <br>
+        <a href="/">Create Another</a>
+    </div>
+</body>
+</html>
